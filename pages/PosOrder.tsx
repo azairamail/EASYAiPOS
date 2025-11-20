@@ -655,26 +655,33 @@ export const PosOrder: React.FC = () => {
       setPrintData({ title: 'Customer Bill', content });
   };
 
-  const handlePrintActiveBill = () => {
-      if (!activeOrder) return;
-      const sub = activeOrder.items.reduce((acc, i) => {
+  const printBillForTable = (table: Table) => {
+      if (!table.currentOrderId) return;
+      const order = state.orders.find(o => o.id === table.currentOrderId);
+      if (!order) return;
+
+      const sub = order.items.reduce((acc, i) => {
           const modsTotal = i.modifiers ? i.modifiers.reduce((mAcc, m) => mAcc + m.price, 0) : 0;
           return acc + ((i.price + modsTotal) * i.quantity);
       }, 0);
       
       const taxAmt = settings.vatEnabled ? sub * (settings.vatRate / 100) : 0;
-      const svc = (settings.serviceChargeEnabled && activeOrder.type === OrderType.DINE_IN) ? sub * (settings.serviceChargeRate / 100) : 0;
+      const svc = (settings.serviceChargeEnabled && order.type === OrderType.DINE_IN) ? sub * (settings.serviceChargeRate / 100) : 0;
       
       const calculatedGross = sub + taxAmt + svc;
-      const storedTotal = activeOrder.totalAmount;
+      const storedTotal = order.totalAmount;
       let discount = 0;
       if (calculatedGross > storedTotal + 0.1) {
           discount = calculatedGross - storedTotal;
       }
       
       const totals = { subtotal: sub, discount, tax: taxAmt, service: svc, total: storedTotal };
-      const content = generateReceipt('BILL', activeOrder.items, selectedTable, activeOrder.type, totals, { id: activeOrder.id, invoiceNo: activeOrder.invoiceNumber });
+      const content = generateReceipt('BILL', order.items, table, order.type, totals, { id: order.id, invoiceNo: order.invoiceNumber });
       setPrintData({ title: 'Customer Bill', content });
+  };
+
+  const handlePrintActiveBill = () => {
+      if (selectedTable) printBillForTable(selectedTable);
   };
 
   const handlePrintActiveKOT = () => {
@@ -758,7 +765,7 @@ export const PosOrder: React.FC = () => {
 
                 <div className="w-px h-10 bg-gray-200 dark:bg-gray-700 mx-2"></div>
 
-                <div className="flex-1 overflow-x-auto no-scrollbar min-w-0">
+                <div className="flex-1 min-w-0 overflow-x-auto">
                     <div className="flex gap-3">
                     {displayTables.map(table => {
                         // Find associated order for item count and timer
@@ -948,7 +955,7 @@ export const PosOrder: React.FC = () => {
                         <div>
                         <h2 className="font-bold text-lg text-gray-900 dark:text-white">Current Order</h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {selectedTable && !selectedTable.status ? `Table: ${getTableDisplayName(selectedTable)}` : orderType}
+                            {selectedTable ? `Table: ${getTableDisplayName(selectedTable)}` : orderType.replace('_', ' ')}
                         </p>
                         </div>
                         <button onClick={() => dispatch({ type: 'CLEAR_CART' })} className="text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
@@ -1290,10 +1297,15 @@ export const PosOrder: React.FC = () => {
                                     <button onClick={() => handleStartEditTable(table)} className="text-blue-500 p-1 hover:bg-blue-50 dark:hover:bg-blue-900 rounded"><Edit2 size={14}/></button>
                                     <button 
                                         type="button"
-                                        onClick={(e) => { e.stopPropagation(); handleDeleteTable(table); }} 
-                                        className="text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900 rounded"
+                                        onClick={(e) => { 
+                                            e.preventDefault();
+                                            e.stopPropagation(); 
+                                            handleDeleteTable(table); 
+                                        }} 
+                                        className="text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors z-20"
+                                        title="Delete Table"
                                     >
-                                        <Trash2 size={14}/>
+                                        <Trash2 size={16}/>
                                     </button>
                                 </div>
                             </div>
@@ -1310,11 +1322,9 @@ export const PosOrder: React.FC = () => {
                                 
                                 {table.status === 'OCCUPIED' && (
                                      <button 
-                                        onClick={() => {
-                                            if(table.currentOrderId) {
-                                                const order = state.orders.find(o => o.id === table.currentOrderId);
-                                                if (order) handlePrintActiveBill(); // Use the active bill printer logic
-                                            }
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            printBillForTable(table);
                                         }} 
                                         className="w-full py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold rounded flex items-center justify-center gap-1 hover:bg-gray-200 dark:hover:bg-gray-600"
                                      >
