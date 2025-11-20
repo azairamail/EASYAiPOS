@@ -572,14 +572,17 @@ export const PosOrder: React.FC = () => {
         return " ".repeat(pad) + str;
     };
 
-    // Header
-    const headerTitle = orderInfo?.titleOverride || (settings.invoiceHeader || (type === 'KOT' ? "KITCHEN TICKET" : "POS"));
-    text += center(headerTitle) + "\n";
+    // Header handled by JSX in Modal now for Logo support, but keeping text here as backup/content
+    
+    if (!settings.logoUrl) {
+        const headerTitle = orderInfo?.titleOverride || (settings.invoiceHeader || (type === 'KOT' ? "KITCHEN TICKET" : "POS"));
+        text += center(headerTitle) + "\n";
 
-    if (type === 'BILL') {
-        text += center(settings.storeName) + "\n";
-        if (settings.address) text += center(settings.address) + "\n";
-        if (settings.phone) text += center(settings.phone) + "\n";
+        if (type === 'BILL') {
+            text += center(settings.storeName) + "\n";
+            if (settings.address) text += center(settings.address) + "\n";
+            if (settings.phone) text += center(settings.phone) + "\n";
+        }
     }
     text += `${line}\n`;
     
@@ -704,7 +707,6 @@ export const PosOrder: React.FC = () => {
       }
   };
 
-
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden transition-colors duration-200">
       {/* Left Section: Menu & Tables */}
@@ -741,8 +743,8 @@ export const PosOrder: React.FC = () => {
               ))}
             </div>
         </div>
-
-        {/* Table Selection */}
+        
+        {/* ... (Previous Table & Menu Code - Unchanged) ... */}
         {orderType === OrderType.DINE_IN && (
              <div className="px-6 py-3 bg-white dark:bg-gray-800 border-b dark:border-gray-700 flex items-center gap-3 transition-colors">
                 <button 
@@ -839,10 +841,10 @@ export const PosOrder: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Section: Cart / Active Order */}
+      {/* Right Section: Cart / Active Order (Unchanged) */}
       <div className="w-80 lg:w-96 shrink-0 bg-white dark:bg-gray-800 border-l dark:border-gray-700 flex flex-col shadow-2xl z-10 transition-colors">
+        {/* ... (Previous Cart UI) ... */}
         {viewMode === 'ACTIVE_ORDER' && activeOrder ? (
-            // ACTIVE ORDER VIEW (Occupied Table - Read Only)
             <>
                 <div className="p-2 border-b dark:border-gray-700 bg-red-50 dark:bg-red-900/20">
                     <div className="flex justify-between items-center px-2">
@@ -911,7 +913,6 @@ export const PosOrder: React.FC = () => {
                 </div>
             </>
         ) : (
-            // NEW ORDER VIEW (Cart or Adding Items to Active)
             <>
                 <div className="p-2 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-900 transition-colors">
                     {selectedTable?.status === 'OCCUPIED' ? (
@@ -1098,7 +1099,7 @@ export const PosOrder: React.FC = () => {
         )}
       </div>
 
-      {/* Modifier / Add to Cart Modal */}
+      {/* Modals (Modifier, Payment, Table Manager, Split Order, Reservation) - Unchanged ... */}
       {isModifierModalOpen && currentModifierItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
             <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1241,8 +1242,8 @@ export const PosOrder: React.FC = () => {
             </div>
         </div>
       )}
-
-      {/* Table Manager Modal */}
+      
+      {/* Table Manager & Split Modal - Unchanged ... */}
       {showTableManager && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
             <div className="bg-white dark:bg-gray-800 w-full max-w-4xl h-[80vh] rounded-2xl shadow-2xl flex flex-col border dark:border-gray-700">
@@ -1353,7 +1354,6 @@ export const PosOrder: React.FC = () => {
         </div>
       )}
 
-      {/* Split Order Modal */}
       {showSplitModal && activeOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
             <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col h-[600px] border dark:border-gray-700">
@@ -1412,13 +1412,11 @@ export const PosOrder: React.FC = () => {
         </div>
       )}
 
-      {/* Reservation Modal */}
       {reservationModal.isOpen && reservationModal.table && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
              <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-2xl shadow-2xl p-6 border dark:border-gray-700">
                  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Reservations for {reservationModal.table.name}</h3>
                  
-                 {/* New Reservation Form */}
                  <div className="space-y-3 mb-6">
                      <input className="w-full p-2 border dark:border-gray-600 rounded bg-transparent dark:text-white" placeholder="Customer Name" value={resName} onChange={e=>setResName(e.target.value)} />
                      <input className="w-full p-2 border dark:border-gray-600 rounded bg-transparent dark:text-white" placeholder="Phone" value={resPhone} onChange={e=>setResPhone(e.target.value)} />
@@ -1429,7 +1427,6 @@ export const PosOrder: React.FC = () => {
                      <button onClick={handleBookReservation} className="w-full bg-purple-600 text-white py-2 rounded font-bold hover:bg-purple-700">Add Reservation</button>
                  </div>
 
-                 {/* Existing Reservations List */}
                  <div className="border-t dark:border-gray-700 pt-4">
                      <h4 className="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2 uppercase">Upcoming</h4>
                      <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -1454,7 +1451,7 @@ export const PosOrder: React.FC = () => {
           </div>
       )}
 
-      {/* Print Modal */}
+      {/* Updated Print Modal with Logo Support */}
       {printData && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
             <div className="bg-white w-full max-w-sm rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1463,8 +1460,21 @@ export const PosOrder: React.FC = () => {
                     <button onClick={() => setPrintData(null)} className="hover:text-gray-300"><X size={20}/></button>
                 </div>
                 <div className="p-4 bg-gray-100 overflow-y-auto flex-1 flex justify-center">
-                    <div className="bg-white p-4 shadow-md text-xs font-mono border-x-4 border-dashed border-gray-300 w-full max-w-[300px]">
-                         <pre className="whitespace-pre-wrap leading-tight text-black">{printData.content}</pre>
+                    <div className="bg-white p-4 shadow-md text-xs font-mono border-x-4 border-dashed border-gray-300 w-full max-w-[300px] print:border-none print:shadow-none print:w-full">
+                         {/* Visual Header for Print */}
+                         <div className="flex items-center gap-3 mb-2 border-b border-dashed border-gray-400 pb-2">
+                            {settings.logoUrl && (
+                                <img src={settings.logoUrl} className="w-12 h-12 object-contain grayscale print:block" alt="Logo" />
+                            )}
+                            <div className={`flex-1 ${!settings.logoUrl ? 'text-center' : 'text-left'}`}>
+                                {settings.logoUrl && <div className="font-bold text-sm">{settings.invoiceHeader || "RECEIPT"}</div>}
+                                <div className="font-bold">{settings.storeName}</div>
+                                {settings.address && <div>{settings.address}</div>}
+                                {settings.phone && <div>{settings.phone}</div>}
+                            </div>
+                         </div>
+                         
+                         <pre className="whitespace-pre-wrap leading-tight text-black font-mono">{printData.content}</pre>
                     </div>
                 </div>
                 <div className="p-4 bg-white border-t flex gap-2">

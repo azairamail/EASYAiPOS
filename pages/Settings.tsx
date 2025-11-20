@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { usePos } from '../context/PosContext';
-import { Store, DollarSign, FileText, Users, Save, Trash2, Plus, Shield, Database, Download, Upload, RefreshCw } from 'lucide-react';
+import { Store, DollarSign, FileText, Users, Save, Trash2, Plus, Shield, Database, Download, Upload, RefreshCw, Image as ImageIcon } from 'lucide-react';
 import { Role, TeamMember } from '../types';
 
 export const Settings: React.FC = () => {
@@ -27,6 +27,7 @@ export const Settings: React.FC = () => {
   const [invoiceFooter, setInvoiceFooter] = useState(settings.invoiceFooter);
   const [invoicePrefix, setInvoicePrefix] = useState(settings.invoicePrefix || 'INV-');
   const [invoiceStartingNumber, setInvoiceStartingNumber] = useState(settings.invoiceStartingNumber?.toString() || '1001');
+  const [logoUrl, setLogoUrl] = useState(settings.logoUrl || '');
 
   // Team Management State
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
@@ -52,7 +53,8 @@ export const Settings: React.FC = () => {
         invoiceHeader,
         invoiceFooter,
         invoicePrefix,
-        invoiceStartingNumber: parseInt(invoiceStartingNumber) || 1001
+        invoiceStartingNumber: parseInt(invoiceStartingNumber) || 1001,
+        logoUrl
       }
     });
     alert('Settings saved successfully!');
@@ -294,9 +296,37 @@ export const Settings: React.FC = () => {
                             <p className="text-[10px] text-gray-400 mt-1">Auto-increments for each new order</p>
                         </div>
                       </div>
+
+                      {/* LOGO URL INPUT */}
+                      <div>
+                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Receipt Logo URL</label>
+                           <div className="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    value={logoUrl} 
+                                    onChange={e => setLogoUrl(e.target.value)} 
+                                    className="flex-1 p-2 border dark:border-gray-600 rounded-lg bg-transparent dark:text-white focus:ring-2 focus:ring-orange-500 outline-none" 
+                                    placeholder="https://example.com/logo.png" 
+                                />
+                                <button 
+                                    onClick={() => setLogoUrl('https://cdn-icons-png.flaticon.com/512/3170/3170733.png')}
+                                    className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-bold hover:bg-gray-200 dark:hover:bg-gray-600"
+                                    title="Use Placeholder"
+                                >
+                                    <ImageIcon size={18} />
+                                </button>
+                           </div>
+                           <p className="text-xs text-gray-400 mt-1">Provide a direct link to an image. It will appear on the left side of the receipt header.</p>
+                           {logoUrl && (
+                               <div className="mt-2 p-2 border border-dashed border-gray-300 rounded w-fit">
+                                   <img src={logoUrl} alt="Logo Preview" className="h-12 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                               </div>
+                           )}
+                      </div>
+
                       <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Receipt Header (Title)</label>
-                          <input type="text" value={invoiceHeader} onChange={e => setInvoiceHeader(e.target.value)} className="w-full p-2 border dark:border-gray-600 rounded-lg bg-transparent dark:text-white focus:ring-2 focus:ring-orange-500 outline-none" placeholder="BHOJ POS" />
+                          <input type="text" value={invoiceHeader} onChange={e => setInvoiceHeader(e.target.value)} className="w-full p-2 border dark:border-gray-600 rounded-lg bg-transparent dark:text-white focus:ring-2 focus:ring-orange-500 outline-none" placeholder="EASYPOS RECEIPT" />
                       </div>
                       <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Footer Message</label>
@@ -306,7 +336,10 @@ export const Settings: React.FC = () => {
                       <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded border border-dashed border-gray-300 dark:border-gray-600 text-center">
                           <p className="text-xs font-mono text-gray-500 dark:text-gray-400 mb-2">PREVIEW</p>
                           <div className="inline-block bg-white text-black p-4 shadow text-left font-mono text-xs w-64">
-                              <div className="text-center font-bold mb-2">{invoiceHeader}</div>
+                              <div className="flex items-center gap-2 mb-2">
+                                  {logoUrl && <img src={logoUrl} className="h-8 w-8 object-contain" alt="logo" />}
+                                  <div className="flex-1 text-center font-bold">{invoiceHeader}</div>
+                              </div>
                               <div className="text-center mb-2">{storeName}</div>
                               <div className="text-center mb-4">{address}</div>
                               <div className="border-b border-dashed border-black mb-2"></div>

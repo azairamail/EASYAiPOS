@@ -45,9 +45,9 @@ export const Sidebar: React.FC = () => {
     <div className="h-screen w-20 md:w-64 bg-slate-900 text-white flex flex-col shadow-xl transition-all z-50 relative">
       <div className="p-4 md:p-6 flex items-center justify-center md:justify-start gap-3 border-b border-slate-800">
         <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center shrink-0">
-          <span className="font-bold text-xl">B</span>
+          <span className="font-bold text-xl">E</span>
         </div>
-        <h1 className="text-xl font-bold hidden md:block text-orange-500">Bhoj POS</h1>
+        <h1 className="text-xl font-bold hidden md:block text-orange-500">EasyPOS BD</h1>
       </div>
       
       <nav className="flex-1 py-6 space-y-2 overflow-y-auto no-scrollbar">

@@ -53,7 +53,7 @@ export const LockScreen: React.FC = () => {
           <div className="mb-8">
              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
                <div className="bg-orange-500 p-2 rounded-lg"><Lock size={24} /></div>
-               Bhoj POS
+               EasyPOS BD
              </h1>
              <p className="text-slate-400 mt-2">Select your profile to login</p>
           </div>

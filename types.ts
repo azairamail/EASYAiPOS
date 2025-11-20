@@ -127,4 +127,5 @@ export interface StoreSettings {
   invoiceFooter: string;
   invoicePrefix: string;
   invoiceStartingNumber: number;
+  logoUrl?: string; // URL for the receipt logo
 }

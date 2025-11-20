@@ -67,7 +67,7 @@ export const Login: React.FC = () => {
                       <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-orange-600">
                           <ChefHat size={32} />
                       </div>
-                      <h1 className="text-3xl font-bold">Bhoj POS</h1>
+                      <h1 className="text-3xl font-bold">EasyPOS BD</h1>
                   </div>
                   <p className="text-lg text-orange-100 font-light">
                       The smartest way to manage your restaurant. Orders, Inventory, KDS, and AI Insights all in one place.
@@ -75,7 +75,7 @@ export const Login: React.FC = () => {
                </div>
                
                <div className="relative z-10">
-                   <p className="text-sm text-orange-200">© 2025 Bhoj Systems. All rights reserved.</p>
+                   <p className="text-sm text-orange-200">© 2025 EasyPOS BD. All rights reserved.</p>
                </div>
            </div>
 

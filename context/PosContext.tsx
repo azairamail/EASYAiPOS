@@ -17,20 +17,21 @@ interface PosState {
 }
 
 const DEFAULT_SETTINGS: StoreSettings = {
-    storeName: 'Bhoj Restaurant',
+    storeName: 'EasyPOS BD',
     branchName: 'Main Branch',
     address: 'Dhaka, Bangladesh',
     phone: '+880 1XXX XXXXXX',
-    email: 'info@bhoj.com',
+    email: 'info@easyposbd.com',
     currencySymbol: '৳',
     vatRate: 5,
     vatEnabled: true,
     serviceChargeRate: 0,
     serviceChargeEnabled: false,
-    invoiceHeader: 'BHOJ POS',
+    invoiceHeader: 'EASYPOS RECEIPT',
     invoiceFooter: 'Thank you for dining with us!',
     invoicePrefix: 'INV-',
-    invoiceStartingNumber: 1001
+    invoiceStartingNumber: 1001,
+    logoUrl: ''
 };
 
 type Action =
